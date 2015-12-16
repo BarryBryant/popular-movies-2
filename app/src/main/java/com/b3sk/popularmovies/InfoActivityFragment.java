@@ -34,6 +34,8 @@ public class InfoActivityFragment extends Fragment {
         setHasOptionsMenu(true);
     }
 
+    //TODO: implement parcelable across all of the JSON POJO models for use as savedInstanceState
+
     /**
     * Retrofit call to API to retrieve MovieDataDetail object
     * */
