@@ -1,30 +1,29 @@
 package com.b3sk.popularmovies;
 
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import com.b3sk.popularmovies.Models.MovieInfo;
 
-public class MainActivity extends AppCompatActivity implements MovieFragment.MovieCallback{
+public class MainActivity extends AppCompatActivity implements MovieFragment.MovieCallback {
 
-    private boolean twoPane;
     private static final String MOVIE_FRAGMENT_TAG = "MFTAG";
+    private boolean twoPane;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        if(findViewById(R.id.movie_detail_container) != null) {
+        if (findViewById(R.id.movie_detail_container) != null) {
             twoPane = true;
-        if(savedInstanceState == null) {
-            getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.movie_detail_container, new InfoActivityFragment(), MOVIE_FRAGMENT_TAG)
-                    .commit();
-        }
+            if (savedInstanceState == null) {
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.movie_detail_container, new InfoActivityFragment(), MOVIE_FRAGMENT_TAG)
+                        .commit();
+            }
 
 
         } else twoPane = false;
@@ -55,13 +54,13 @@ public class MainActivity extends AppCompatActivity implements MovieFragment.Mov
     }
 
     @Override
-    public void onItemSelected(MovieInfo movie){
+    public void onItemSelected(MovieInfo movie) {
 
-            // In two-pane mode, show the detail view in this activity by
-            // adding or replacing the detail fragment using a
-            // fragment transaction.
-            Bundle args = new Bundle();
-            args.putParcelable(MovieFragment.PAR_KEY, movie);
+        // In two-pane mode, show the detail view in this activity by
+        // adding or replacing the detail fragment using a
+        // fragment transaction.
+        Bundle args = new Bundle();
+        args.putParcelable(MovieFragment.PAR_KEY, movie);
         if (twoPane) {
             InfoActivityFragment fragment = new InfoActivityFragment();
             fragment.setArguments(args);

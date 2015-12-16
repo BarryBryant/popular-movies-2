@@ -1,15 +1,11 @@
 package com.b3sk.popularmovies.Rest;
 
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-
-import com.b3sk.popularmovies.MainActivity;
 import com.b3sk.popularmovies.Models.MovieData;
-import com.b3sk.popularmovies.R;
-
+import com.b3sk.popularmovies.Models.MovieDataDetail;
 
 import retrofit.Call;
 import retrofit.http.GET;
+import retrofit.http.Path;
 import retrofit.http.Query;
 
 /**
@@ -20,9 +16,13 @@ public interface MovieApiInterface {
     //Builds initial API call with sort/api key query param
     @GET("/3/discover/movie?")
     Call<MovieData> getQueryParam(@Query("sort_by") String sortMethod,
-            @Query("api_key") String apiKey);
+                                  @Query("api_key") String apiKey);
 
-
+    @GET("/3/movie/{id}?")
+    Call<MovieDataDetail> getIdAndKey(
+            @Path("id") String id,
+            @Query("api_key") String apiKey,
+            @Query("append_to_response") String trailersAndReviews);
 
 
 }

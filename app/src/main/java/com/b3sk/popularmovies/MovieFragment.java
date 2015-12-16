@@ -1,6 +1,5 @@
 package com.b3sk.popularmovies;
 
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -18,7 +17,6 @@ import com.b3sk.popularmovies.Rest.MovieApiInterface;
 import com.b3sk.popularmovies.Rest.RestClient;
 
 import java.util.ArrayList;
-import java.util.BitSet;
 import java.util.List;
 
 import retrofit.Call;
@@ -30,24 +28,21 @@ import retrofit.Response;
  */
 public class MovieFragment extends Fragment {
 
+    public final static String PAR_KEY = "com.b3sk.popularmovies.par";
     private MovieAdapter movieAdapter;
     private List<MovieInfo> movieList;
-    public final static String PAR_KEY = "com.b3sk.popularmovies.par";
 
 
-    public interface MovieCallback{
-        void onItemSelected(MovieInfo movie);
+    public MovieFragment() {
     }
 
-
-
-    private void updateMovie(){
+    private void updateMovie() {
 
         SharedPreferences sharedPrefs =
                 PreferenceManager.getDefaultSharedPreferences(getActivity());
         final String sortMethod = sharedPrefs.getString(
                 getString(R.string.pref_sort_key),
-                getString(R.string.pref_sort_label_popularity));
+                getString(R.string.pref_sort_popularity));
 
         MovieApiInterface service = RestClient.getClient();
         Call<MovieData> call = service.getQueryParam(sortMethod, BuildConfig.MOVIE_DB_API_KEY);
@@ -59,9 +54,9 @@ public class MovieFragment extends Fragment {
                 MovieData result = response.body();
                 movieList = result.getResults();
                 movieAdapter.clear();
-                for(int i = 0; i < movieList.size(); i++){
-                movieAdapter.add(movieList.get(i));}
-                Log.d("MainActivity", "************** something to look at");
+                for (int i = 0; i < movieList.size(); i++) {
+                    movieAdapter.add(movieList.get(i));
+                }
             }
 
             @Override
@@ -74,23 +69,19 @@ public class MovieFragment extends Fragment {
     //Check if there is a previously saved activity state.
     //Utilizes parcelable interface.
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if(savedInstanceState == null || !savedInstanceState.containsKey(PAR_KEY)) {
+        if (savedInstanceState == null || !savedInstanceState.containsKey(PAR_KEY)) {
             movieList = new ArrayList<>();
-        }
-        else {
+        } else {
             movieList = savedInstanceState.getParcelableArrayList(PAR_KEY);
         }
-    }
-
-    public MovieFragment() {
     }
 
     //Saves state of activity as parcelable.
     @Override
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(PAR_KEY, (ArrayList)movieList);
+        outState.putParcelableArrayList(PAR_KEY, (ArrayList) movieList);
         super.onSaveInstanceState(outState);
     }
 
@@ -112,8 +103,8 @@ public class MovieFragment extends Fragment {
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                  MovieInfo movie = movieAdapter.getItem(i);
-                  if (movie != null) {
+                MovieInfo movie = movieAdapter.getItem(i);
+                if (movie != null) {
                     ((MovieCallback) getActivity())
                             .onItemSelected(movie);
                 }
@@ -125,13 +116,14 @@ public class MovieFragment extends Fragment {
     }
 
     @Override
-    public void onStart(){
+    public void onStart() {
         super.onStart();
         updateMovie();
     }
 
-
-
+    public interface MovieCallback {
+        void onItemSelected(MovieInfo movie);
+    }
 
 
 }

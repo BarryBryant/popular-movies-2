@@ -21,30 +21,27 @@ public class MovieAdapter extends ArrayAdapter<MovieInfo> {
     private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
 
     /**
-     *
      * @param context the current context
      * @param movies  A list of movie posters to display in a grid
      */
 
-    public MovieAdapter(Activity context, List<MovieInfo> movies){
+    public MovieAdapter(Activity context, List<MovieInfo> movies) {
         super(context, 0, movies);
 
-        }
-
+    }
 
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent){
+    public View getView(int position, View convertView, ViewGroup parent) {
         MovieInfo movieInfo = getItem(position);
-        if(convertView == null){
+        if (convertView == null) {
             convertView = LayoutInflater.from(getContext()).inflate(
                     R.layout.grid_item_movie, parent, false);
         }
 
 
-
         ImageView posterView = (ImageView) convertView.findViewById(R.id.grid_item_image);
-        String thumbLink = "http://image.tmdb.org/t/p/w185/"+movieInfo.getPosterPath();
+        String thumbLink = "http://image.tmdb.org/t/p/w185/" + movieInfo.getPosterPath();
         Picasso.with(getContext()).load(thumbLink).into(posterView);
         return convertView;
     }

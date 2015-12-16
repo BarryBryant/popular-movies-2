@@ -1,15 +1,7 @@
 package com.b3sk.popularmovies.Models;
 
-/**
- * Created by Joopk on 12/9/2015.
- */
 import android.os.Parcel;
 import android.os.Parcelable;
-
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * Created by Joopk on 12/9/2015.
@@ -29,81 +21,12 @@ public class MovieInfo implements Parcelable {
     };
 
     private String poster_path;
-    private Boolean adult;
+
     private String overview;
     private String release_date;
-    private List<Object> genreIds = new ArrayList<Object>();
     private String id;
-    private String original_title;
-    private String originalLanguage;
     private String title;
-    private Object backdropPath;
-    private Double popularity;
-    private Integer voteCount;
-    private Boolean video;
     private String vote_average;
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
-
-    /**
-     *
-     * @return
-     * The posterPath
-     */
-    public String getPosterPath() {
-        return poster_path;
-    }
-
-
-
-    /**
-     *
-     * @return
-     * The overview
-     */
-    public String getOverview() {
-        return overview;
-    }
-
-
-    /**
-     *
-     * @return
-     * The releaseDate
-     */
-    public String getReleaseDate() {
-        return release_date;
-    }
-
-    /**
-     *
-     * @return
-     * The id
-     */
-    public String getId() {
-        return id;
-    }
-
-
-    /**
-     *
-     * @return
-     * The title
-     */
-    public String getTitle() {
-        return title;
-    }
-
-
-    /**
-     *
-     * @return
-     * The voteAverage
-     */
-    public String getVoteAverage() {
-        return vote_average;
-    }
-
-
 
     private MovieInfo(Parcel in) {
         poster_path = in.readString();
@@ -113,6 +36,48 @@ public class MovieInfo implements Parcelable {
         title = in.readString();
         vote_average = in.readString();
 
+    }
+
+    /**
+     * @return The posterPath
+     */
+    public String getPosterPath() {
+        return poster_path;
+    }
+
+    /**
+     * @return The overview
+     */
+    public String getOverview() {
+        return overview;
+    }
+
+    /**
+     * @return The releaseDate
+     */
+    public String getReleaseDate() {
+        return release_date;
+    }
+
+    /**
+     * @return The id
+     */
+    public String getId() {
+        return id;
+    }
+
+    /**
+     * @return The title
+     */
+    public String getTitle() {
+        return title;
+    }
+
+    /**
+     * @return The voteAverage
+     */
+    public String getVoteAverage() {
+        return vote_average;
     }
 
     @Override
