@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 
+import com.b3sk.popularmovies.Models.MovieDataDetail;
 import com.b3sk.popularmovies.Models.MovieInfo;
 import com.squareup.picasso.Picasso;
 

@@ -1,12 +1,42 @@
 package com.b3sk.popularmovies.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Joopk on 12/15/2015.
  */
-public class ReviewResult {
+public class ReviewResult implements Parcelable {
+
+    public static final Parcelable.Creator<ReviewResult> CREATOR = new Parcelable.Creator<ReviewResult>() {
+        @Override
+        public ReviewResult createFromParcel(Parcel parcel) {
+            return new ReviewResult(parcel);
+        }
+
+        @Override
+        public ReviewResult[] newArray(int i) {
+            return new ReviewResult[i];
+        }
+    };
     private String author;
     private String content;
 
+    private ReviewResult(Parcel in) {
+        author = in.readString();
+        content = in.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(author);
+        parcel.writeString(content);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
     /**
      * @return The author

@@ -1,28 +1,57 @@
 package com.b3sk.popularmovies.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Joopk on 12/15/2015.
  */
-public class Reviews {
-    private Integer page;
-    private List<ReviewResult> reviewResults = new ArrayList<ReviewResult>();
+public class Reviews implements Parcelable {
+
+    public static final Parcelable.Creator<Reviews> CREATOR = new Parcelable.Creator<Reviews>() {
+        @Override
+        public Reviews createFromParcel(Parcel parcel) {
+            return new Reviews(parcel);
+        }
+
+        @Override
+        public Reviews[] newArray(int i) {
+            return new Reviews[i];
+        }
+    };
+
+    private List<ReviewResult> results = new ArrayList<ReviewResult>();
+
+    private Reviews(Parcel in) {
+        in.readList(results, this.getClass().getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeList(results);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
 
     /**
-     * @return The reviewResults
+     * @return The results
      */
-    public List<ReviewResult> getReviewResults() {
-        return reviewResults;
+    public List<ReviewResult> getResults() {
+        return results;
     }
 
     /**
-     * @param reviewResults The reviewResults
+     * @param results The results
      */
-    public void setReviewResults(List<ReviewResult> reviewResults) {
-        this.reviewResults = reviewResults;
+    public void setResults(List<ReviewResult> results) {
+        this.results = results;
     }
 
 

@@ -1,20 +1,33 @@
 package com.b3sk.popularmovies;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.b3sk.popularmovies.Models.MovieDataDetail;
 import com.b3sk.popularmovies.Models.MovieInfo;
+import com.b3sk.popularmovies.Models.ReviewResult;
+import com.b3sk.popularmovies.Models.Reviews;
+import com.b3sk.popularmovies.Models.Trailers;
+import com.b3sk.popularmovies.Models.Youtube;
 import com.b3sk.popularmovies.Rest.MovieApiInterface;
 import com.b3sk.popularmovies.Rest.RestClient;
 import com.squareup.picasso.Picasso;
+
+import org.w3c.dom.Text;
+
+import java.util.List;
 
 import retrofit.Call;
 import retrofit.Callback;
@@ -29,6 +42,7 @@ public class InfoActivityFragment extends Fragment {
     private MovieDataDetail masterMovie;
     private String movieId;
     private String API_CALL_APPEND = "trailers,reviews";
+
 
     public InfoActivityFragment() {
         setHasOptionsMenu(true);
@@ -82,7 +96,60 @@ public class InfoActivityFragment extends Fragment {
         String thumbLink = "http://image.tmdb.org/t/p/w185/" + movie.getPosterPath();
         ImageView posterView = (ImageView) getActivity().findViewById(R.id.detail_poster);
         Picasso.with(getContext()).load(thumbLink).into(posterView);
+        populateReviewAndTrailerContainer(movie);
     }
+
+    /**
+     * Checks the movie data for trailers and reviews, then adds them to the UI.
+     * @param movie
+     */
+    public void populateReviewAndTrailerContainer(MovieDataDetail movie){
+        Trailers trailers = movie.getTrailers();
+        List<Youtube> youtubes = trailers.getYoutube();
+        Reviews reviews = movie.getReviews();
+        List<ReviewResult> results = reviews.getResults();
+
+        if(results != null) {
+            for (Youtube videos : youtubes) {
+                LayoutInflater inflator = LayoutInflater.from(getContext());
+                LinearLayout container = (LinearLayout) getActivity().findViewById(
+                        R.id.trailer_container);
+                View item = inflator.inflate(R.layout.trailer, null);
+                Button button = (Button) item.findViewById(R.id.launch_youtube);
+                final String trailerLink =
+                        "http://www.youtube.com/watch?v="+videos.getSource();
+                button.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        startActivity(new Intent(Intent.ACTION_VIEW,
+                            Uri.parse(trailerLink)));
+                    }
+                });
+                TextView videoDesc = (TextView) item.findViewById(R.id.video_title);
+                String title = videos.getName();
+                videoDesc.setText(title);
+                container.addView(item);
+            }
+        }else Log.d("InfoActivityFragment", "Looks like there aint no trailers!");
+
+        if(results != null) {
+            for (ReviewResult reviewResult : results) {
+                LayoutInflater inflator = LayoutInflater.from(getContext());
+                LinearLayout container = (LinearLayout) getActivity().findViewById(
+                        R.id.review_container);
+                View item = inflator.inflate(R.layout.review, null);
+                TextView reviewView = (TextView) item.findViewById(R.id.review_body);
+                TextView authorView = (TextView) item.findViewById(R.id.review_author);
+                String author = reviewResult.getAuthor();
+                String reviewContent = reviewResult.getContent();
+                reviewView.setText(reviewContent);
+                authorView.setText(author);
+                container.addView(item);
+            }
+        }else Log.d("InfoActivityFragment", "Looks like there aint no reviews!");
+    }
+
+    public void onFavoriteClick() {}
 
 
     @Override
@@ -103,6 +170,13 @@ public class InfoActivityFragment extends Fragment {
             MovieInfo movie = arguments.getParcelable(MovieFragment.PAR_KEY);
             movieId = movie.getId();
         }
+        Button button = (Button)getActivity().findViewById(R.id.favorite_button);
+//        button.setOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//
+//            }
+//        });
 
         return rootView;
     }

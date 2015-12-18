@@ -1,25 +1,67 @@
 package com.b3sk.popularmovies.Models;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 /**
  * Created by Joopk on 12/15/2015.
  */
-public class MovieDataDetail {
+public class MovieDataDetail implements Parcelable {
 
+    public static final Parcelable.Creator<MovieDataDetail> CREATOR = new Parcelable.Creator<MovieDataDetail>() {
+        @Override
+        public MovieDataDetail createFromParcel(Parcel parcel) {
+            return new MovieDataDetail(parcel);
+        }
 
-    private Integer id;
+        @Override
+        public MovieDataDetail[] newArray(int i) {
+            return new MovieDataDetail[i];
+        }
+    };
+    private String id;
     private String overview;
     private String poster_path;
     private String release_date;
     private String title;
-    private Double vote_average;
+    private String vote_average;
     private Trailers trailers;
     private Reviews reviews;
+
+
+    private MovieDataDetail(Parcel in) {
+        id = in.readString();
+        overview = in.readString();
+        poster_path = in.readString();
+        release_date = in.readString();
+        title = in.readString();
+        vote_average = in.readString();
+        trailers = in.readParcelable(Trailers.class.getClassLoader());
+        reviews = in.readParcelable(Reviews.class.getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeString(id);
+        parcel.writeString(overview);
+        parcel.writeString(poster_path);
+        parcel.writeString(release_date);
+        parcel.writeString(title);
+        parcel.writeString(vote_average);
+        parcel.writeParcelable(trailers, i);
+        parcel.writeParcelable(reviews, i);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
 
     /**
      * @return The id
      */
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -27,7 +69,7 @@ public class MovieDataDetail {
     /**
      * @param id The id
      */
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
@@ -92,14 +134,14 @@ public class MovieDataDetail {
     /**
      * @return The vote_average
      */
-    public Double getVoteAverage() {
+    public String getVoteAverage() {
         return vote_average;
     }
 
     /**
      * @param vote_average The vote_average
      */
-    public void setVoteAverage(Double vote_average) {
+    public void setVoteAverage(String vote_average) {
         this.vote_average = vote_average;
     }
 

@@ -12,6 +12,7 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.b3sk.popularmovies.Models.MovieData;
+import com.b3sk.popularmovies.Models.MovieDataDetail;
 import com.b3sk.popularmovies.Models.MovieInfo;
 import com.b3sk.popularmovies.Rest.MovieApiInterface;
 import com.b3sk.popularmovies.Rest.RestClient;
@@ -57,6 +58,7 @@ public class MovieFragment extends Fragment {
                 for (int i = 0; i < movieList.size(); i++) {
                     movieAdapter.add(movieList.get(i));
                 }
+
             }
 
             @Override
@@ -120,6 +122,8 @@ public class MovieFragment extends Fragment {
         super.onStart();
         updateMovie();
     }
+
+
 
     public interface MovieCallback {
         void onItemSelected(MovieInfo movie);
