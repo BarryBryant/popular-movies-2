@@ -35,14 +35,19 @@ public class MovieInfo implements Parcelable {
         id = in.readString();
         title = in.readString();
         vote_average = in.readString();
-
     }
+
+    public MovieInfo(){}
 
     /**
      * @return The posterPath
      */
     public String getPosterPath() {
         return poster_path;
+    }
+
+    public void setPosterPath(String poster_path){
+        this.poster_path = poster_path;
     }
 
     /**
@@ -65,6 +70,8 @@ public class MovieInfo implements Parcelable {
     public String getId() {
         return id;
     }
+
+    public void setId(String id){this.id = id;}
 
     /**
      * @return The title

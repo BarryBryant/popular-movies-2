@@ -20,6 +20,7 @@ public class Youtube implements Parcelable {
         }
     };
 
+    public Youtube(){}
     private String name;
     private String source;
 

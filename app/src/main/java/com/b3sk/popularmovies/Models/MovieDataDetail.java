@@ -19,6 +19,7 @@ public class MovieDataDetail implements Parcelable {
             return new MovieDataDetail[i];
         }
     };
+    public MovieDataDetail(){}
     private String id;
     private String overview;
     private String poster_path;

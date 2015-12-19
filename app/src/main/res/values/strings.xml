@@ -9,7 +9,9 @@
     <string name="pref_sort_label">Sort By</string>
     <string name="pref_sort_label_popularity">Popularity</string>
     <string name="pref_sort_label_rating">Rating</string>
+    <string name="pref_sort_label_favorites">Favorites</string>
     <string name="pref_sort_key" translatable="false">sort</string>
+    <string name="pref_sort_favorites" translatable="false">favorites</string>
     <string name="pref_sort_popularity" translatable="false">popularity.desc</string>
     <string name="pref_sort_rating" translatable="false">vote_average.desc</string>
 

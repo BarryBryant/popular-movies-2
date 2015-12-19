@@ -12,14 +12,17 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import com.b3sk.popularmovies.Models.MovieData;
-import com.b3sk.popularmovies.Models.MovieDataDetail;
 import com.b3sk.popularmovies.Models.MovieInfo;
+import com.b3sk.popularmovies.Models.RealmMovie;
 import com.b3sk.popularmovies.Rest.MovieApiInterface;
 import com.b3sk.popularmovies.Rest.RestClient;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -45,27 +48,52 @@ public class MovieFragment extends Fragment {
                 getString(R.string.pref_sort_key),
                 getString(R.string.pref_sort_popularity));
 
-        MovieApiInterface service = RestClient.getClient();
-        Call<MovieData> call = service.getQueryParam(sortMethod, BuildConfig.MOVIE_DB_API_KEY);
+        //perform api call if sort method is popularity or rating
+        if (!getString(R.string.pref_sort_favorites).equals(sortMethod)) {
+            MovieApiInterface service = RestClient.getClient();
+            Call<MovieData> call = service.getQueryParam(sortMethod, BuildConfig.MOVIE_DB_API_KEY);
 
 
-        call.enqueue(new Callback<MovieData>() {
-            @Override
-            public void onResponse(Response<MovieData> response) {
-                MovieData result = response.body();
-                movieList = result.getResults();
-                movieAdapter.clear();
-                for (int i = 0; i < movieList.size(); i++) {
-                    movieAdapter.add(movieList.get(i));
+            call.enqueue(new Callback<MovieData>() {
+                @Override
+                public void onResponse(Response<MovieData> response) {
+                    MovieData result = response.body();
+                    movieList = result.getResults();
+                    movieAdapter.clear();
+                    for (int i = 0; i < movieList.size(); i++) {
+                        movieAdapter.add(movieList.get(i));
+                    }
+
                 }
 
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("MainActivity", "well this aint right");
+                }
+            });
+            //perform offline database query if favorites is selected
+        } else {
+            Realm realm = Realm.getInstance(getContext());
+            realm.beginTransaction();
+            RealmQuery<RealmMovie> query = realm.where(RealmMovie.class);
+            RealmResults<RealmMovie> result = query.findAll();
+
+            List<MovieInfo> favoriteList = new ArrayList<>();
+            for(RealmMovie movie: result){
+                Log.d("FavoriteLOOPER", movie.getId());
+                MovieInfo movieInfo = new MovieInfo();
+                movieInfo.setId(movie.getId());
+                movieInfo.setPosterPath(movie.getPosterPath());
+                favoriteList.add(movieInfo);
+            }
+            realm.commitTransaction();
+            movieList = favoriteList;
+            movieAdapter.clear();
+            for (int i = 0; i < movieList.size(); i++) {
+                movieAdapter.add(movieList.get(i));
             }
 
-            @Override
-            public void onFailure(Throwable t) {
-                Log.d("MainActivity", "well this aint right");
-            }
-        });
+        }
     }
 
     //Check if there is a previously saved activity state.
@@ -122,7 +150,6 @@ public class MovieFragment extends Fragment {
         super.onStart();
         updateMovie();
     }
-
 
 
     public interface MovieCallback {

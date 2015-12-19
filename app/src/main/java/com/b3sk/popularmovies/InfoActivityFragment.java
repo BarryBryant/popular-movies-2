@@ -5,18 +5,17 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
-import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.b3sk.popularmovies.Models.MovieDataDetail;
 import com.b3sk.popularmovies.Models.MovieInfo;
+import com.b3sk.popularmovies.Models.RealmMovie;
 import com.b3sk.popularmovies.Models.ReviewResult;
 import com.b3sk.popularmovies.Models.Reviews;
 import com.b3sk.popularmovies.Models.Trailers;
@@ -25,10 +24,9 @@ import com.b3sk.popularmovies.Rest.MovieApiInterface;
 import com.b3sk.popularmovies.Rest.RestClient;
 import com.squareup.picasso.Picasso;
 
-import org.w3c.dom.Text;
-
 import java.util.List;
 
+import io.realm.Realm;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -42,6 +40,7 @@ public class InfoActivityFragment extends Fragment {
     private MovieDataDetail masterMovie;
     private String movieId;
     private String API_CALL_APPEND = "trailers,reviews";
+    private boolean TESTER = true;
 
 
     public InfoActivityFragment() {
@@ -52,6 +51,7 @@ public class InfoActivityFragment extends Fragment {
 
     /**
     * Retrofit call to API to retrieve MovieDataDetail object
+     * or db query if favorites preference is selected
     * */
 
     private void updateMovieInfo() {
@@ -66,6 +66,7 @@ public class InfoActivityFragment extends Fragment {
                 populateDetailView(result);
                 masterMovie = result;
             }
+
             @Override
             public void onFailure(Throwable t) {
                 Log.d("MainActivity", "************FAILURE OF 2nd CALL");
@@ -149,7 +150,20 @@ public class InfoActivityFragment extends Fragment {
         }else Log.d("InfoActivityFragment", "Looks like there aint no reviews!");
     }
 
-    public void onFavoriteClick() {}
+    public void onFavoriteClick() {
+
+        RealmMovie realmTest = Utility.movieDataDetailToRealm(masterMovie);
+        Log.d("InfoFrag", realmTest.getTitle());
+        Realm realm = Realm.getInstance(getContext());
+        realm.beginTransaction();
+
+        RealmMovie realmMovie = realm.copyToRealmOrUpdate(realmTest);
+        realm.commitTransaction();
+
+
+    }
+
+
 
 
     @Override
@@ -170,13 +184,16 @@ public class InfoActivityFragment extends Fragment {
             MovieInfo movie = arguments.getParcelable(MovieFragment.PAR_KEY);
             movieId = movie.getId();
         }
-        Button button = (Button)getActivity().findViewById(R.id.favorite_button);
-//        button.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//
-//            }
-//        });
+
+        Button button = (Button)rootView.findViewById(R.id.favorite_button);
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onFavoriteClick();
+            }
+        });
+
+
 
         return rootView;
     }

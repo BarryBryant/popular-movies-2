@@ -23,6 +23,7 @@ public class Trailers implements Parcelable {
         }
     };
 
+    public Trailers(){}
     private List<Youtube> youtube = new ArrayList<Youtube>();
 
 

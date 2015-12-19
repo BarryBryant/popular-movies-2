@@ -10,7 +10,7 @@ import io.realm.annotations.PrimaryKey;
 public class RealmMovie extends RealmObject {
 
     @PrimaryKey
-    private Integer id;
+    private String id;
 
     private String overview;
     private String posterPath;
@@ -24,7 +24,7 @@ public class RealmMovie extends RealmObject {
     /**
      * @return The id
      */
-    public Integer getId() {
+    public String getId() {
         return id;
     }
 
@@ -32,7 +32,7 @@ public class RealmMovie extends RealmObject {
     /**
      * @param id The id
      */
-    public void setId(Integer id) {
+    public void setId(String id) {
         this.id = id;
     }
 
