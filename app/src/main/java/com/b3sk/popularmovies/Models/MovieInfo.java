@@ -8,17 +8,6 @@ import android.os.Parcelable;
  */
 public class MovieInfo implements Parcelable {
 
-    public static final Parcelable.Creator<MovieInfo> CREATOR = new Parcelable.Creator<MovieInfo>() {
-        @Override
-        public MovieInfo createFromParcel(Parcel parcel) {
-            return new MovieInfo(parcel);
-        }
-
-        @Override
-        public MovieInfo[] newArray(int i) {
-            return new MovieInfo[i];
-        }
-    };
 
     private String poster_path;
 
@@ -28,16 +17,9 @@ public class MovieInfo implements Parcelable {
     private String title;
     private String vote_average;
 
-    private MovieInfo(Parcel in) {
-        poster_path = in.readString();
-        overview = in.readString();
-        release_date = in.readString();
-        id = in.readString();
-        title = in.readString();
-        vote_average = in.readString();
-    }
 
-    public MovieInfo(){}
+    public MovieInfo() {
+    }
 
     /**
      * @return The posterPath
@@ -46,7 +28,7 @@ public class MovieInfo implements Parcelable {
         return poster_path;
     }
 
-    public void setPosterPath(String poster_path){
+    public void setPosterPath(String poster_path) {
         this.poster_path = poster_path;
     }
 
@@ -71,7 +53,9 @@ public class MovieInfo implements Parcelable {
         return id;
     }
 
-    public void setId(String id){this.id = id;}
+    public void setId(String id) {
+        this.id = id;
+    }
 
     /**
      * @return The title
@@ -87,6 +71,20 @@ public class MovieInfo implements Parcelable {
         return vote_average;
     }
 
+
+    public static final Parcelable.Creator<MovieInfo> CREATOR = new Parcelable.Creator<MovieInfo>() {
+        @Override
+        public MovieInfo createFromParcel(Parcel parcel) {
+            return new MovieInfo(parcel);
+        }
+
+        @Override
+        public MovieInfo[] newArray(int i) {
+            return new MovieInfo[i];
+        }
+    };
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -101,6 +99,16 @@ public class MovieInfo implements Parcelable {
         parcel.writeString(title);
         parcel.writeString(vote_average);
     }
+
+    private MovieInfo(Parcel in) {
+        poster_path = in.readString();
+        overview = in.readString();
+        release_date = in.readString();
+        id = in.readString();
+        title = in.readString();
+        vote_average = in.readString();
+    }
+
 
 }
 

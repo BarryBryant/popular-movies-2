@@ -11,35 +11,10 @@ import java.util.List;
  */
 public class Trailers implements Parcelable {
 
-    public static final Parcelable.Creator<Trailers> CREATOR = new Parcelable.Creator<Trailers>() {
-        @Override
-        public Trailers createFromParcel(Parcel parcel) {
-            return new Trailers(parcel);
-        }
 
-        @Override
-        public Trailers[] newArray(int i) {
-            return new Trailers[i];
-        }
-    };
+    public Trailers() {}
 
-    public Trailers(){}
     private List<Youtube> youtube = new ArrayList<Youtube>();
-
-
-    private Trailers(Parcel in) {
-        in.readList(youtube, this.getClass().getClassLoader());
-    }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeList(youtube);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
 
     /**
@@ -56,5 +31,31 @@ public class Trailers implements Parcelable {
         this.youtube = youtube;
     }
 
+    public static final Parcelable.Creator<Trailers> CREATOR = new Parcelable.Creator<Trailers>() {
+        @Override
+        public Trailers createFromParcel(Parcel parcel) {
+            return new Trailers(parcel);
+        }
+
+        @Override
+        public Trailers[] newArray(int i) {
+            return new Trailers[i];
+        }
+    };
+
+
+    private Trailers(Parcel in) {
+        in.readList(youtube, this.getClass().getClassLoader());
+    }
+
+    @Override
+    public void writeToParcel(Parcel parcel, int i) {
+        parcel.writeList(youtube);
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
 
 }
