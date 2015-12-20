@@ -1,11 +1,20 @@
 package com.b3sk.popularmovies;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
+import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -27,6 +36,8 @@ import com.squareup.picasso.Picasso;
 import java.util.List;
 
 import io.realm.Realm;
+import io.realm.RealmQuery;
+import io.realm.RealmResults;
 import retrofit.Call;
 import retrofit.Callback;
 import retrofit.Response;
@@ -37,49 +48,75 @@ import retrofit.Response;
 public class InfoActivityFragment extends Fragment {
 
 
-    private MovieDataDetail masterMovie;
+    private static MovieDataDetail masterMovie;
     private String movieId;
     private String API_CALL_APPEND = "trailers,reviews";
-    private boolean TESTER = true;
 
 
     public InfoActivityFragment() {
         setHasOptionsMenu(true);
     }
 
-    //TODO: implement parcelable across all of the JSON POJO models for use as savedInstanceState
+    public static boolean checkIfFragmentPopulated() {
+        if (masterMovie != null) {
+            return true;
+        } else return false;
+    }
 
     /**
-    * Retrofit call to API to retrieve MovieDataDetail object
+     * Retrofit call to API to retrieve MovieDataDetail object
      * or db query if favorites preference is selected
-    * */
+     */
 
-    private void updateMovieInfo() {
-        MovieApiInterface service = RestClient.getClient();
-        Call<MovieDataDetail> call = service.getIdAndKey(
-                movieId, BuildConfig.MOVIE_DB_API_KEY, API_CALL_APPEND);
+    private void updateMovieInfo(String id) {
 
-        call.enqueue(new Callback<MovieDataDetail>() {
-            @Override
-            public void onResponse(Response<MovieDataDetail> response) {
-                MovieDataDetail result = response.body();
-                populateDetailView(result);
-                masterMovie = result;
+        SharedPreferences sharedPrefs =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final String sortMethod = sharedPrefs.getString(
+                getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_popularity));
+
+        //perform api call if sort method is popularity or rating
+        if (!getString(R.string.pref_sort_favorites).equals(sortMethod)) {
+
+            MovieApiInterface service = RestClient.getClient();
+            Call<MovieDataDetail> call = service.getIdAndKey(
+                    id, BuildConfig.MOVIE_DB_API_KEY, API_CALL_APPEND);
+
+            call.enqueue(new Callback<MovieDataDetail>() {
+                @Override
+                public void onResponse(Response<MovieDataDetail> response) {
+                    MovieDataDetail result = response.body();
+                    populateDetailView(result);
+                    masterMovie = result;
+                }
+
+                @Override
+                public void onFailure(Throwable t) {
+                    Log.d("MainActivity", "************FAILURE OF 2nd CALL");
+                }
+            });
+            //Update from database
+        } else {
+            Realm realm = Realm.getInstance(getContext());
+            realm.beginTransaction();
+            RealmQuery<RealmMovie> query = realm.where(RealmMovie.class).equalTo("id", id);
+            RealmResults<RealmMovie> result = query.findAll();
+            realm.commitTransaction();
+            if (result.size() > 0) {
+                masterMovie = Utility.realmToMovieDataDetail(result.get(0));
+                populateDetailView(masterMovie);
             }
-
-            @Override
-            public void onFailure(Throwable t) {
-                Log.d("MainActivity", "************FAILURE OF 2nd CALL");
-            }
-        });
+        }
     }
 
     /**
      * Populates the detail fragment views with the movie's info
+     *
      * @param movie
      */
     //TODO: Use xliff in place of concatenated strings
-    private void populateDetailView(MovieDataDetail movie){
+    private void populateDetailView(MovieDataDetail movie) {
 
         ((TextView) getActivity().findViewById(R.id.detail_title))
                 .setText(movie.getTitle());
@@ -94,23 +131,41 @@ public class InfoActivityFragment extends Fragment {
                 .setText("Rating: " + movie.getVoteAverage() + "/10");
 
         //Build link and use picasso to handle setting the thumbnail image.
+
+
+        SharedPreferences sharedPrefs =
+                PreferenceManager.getDefaultSharedPreferences(getActivity());
+        final String sortMethod = sharedPrefs.getString(
+                getString(R.string.pref_sort_key),
+                getString(R.string.pref_sort_popularity));
         String thumbLink = "http://image.tmdb.org/t/p/w185/" + movie.getPosterPath();
         ImageView posterView = (ImageView) getActivity().findViewById(R.id.detail_poster);
-        Picasso.with(getContext()).load(thumbLink).into(posterView);
+        //If pref is not favorites use picasso to download
+        if (!getString(R.string.pref_sort_favorites).equals(sortMethod)) {
+            Picasso.with(getContext()).load(thumbLink).into(posterView);
+
+            //Offline Support:
+            //Use stored byte array to build bitmap for imageview
+        } else {
+            Bitmap image = Utility.getImage(movie.getImageBytes());
+            posterView.setImageBitmap(image);
+        }
         populateReviewAndTrailerContainer(movie);
+
     }
 
     /**
      * Checks the movie data for trailers and reviews, then adds them to the UI.
+     *
      * @param movie
      */
-    public void populateReviewAndTrailerContainer(MovieDataDetail movie){
+    public void populateReviewAndTrailerContainer(MovieDataDetail movie) {
         Trailers trailers = movie.getTrailers();
         List<Youtube> youtubes = trailers.getYoutube();
         Reviews reviews = movie.getReviews();
         List<ReviewResult> results = reviews.getResults();
 
-        if(results != null) {
+        if (results != null) {
             for (Youtube videos : youtubes) {
                 LayoutInflater inflator = LayoutInflater.from(getContext());
                 LinearLayout container = (LinearLayout) getActivity().findViewById(
@@ -118,12 +173,12 @@ public class InfoActivityFragment extends Fragment {
                 View item = inflator.inflate(R.layout.trailer, null);
                 Button button = (Button) item.findViewById(R.id.launch_youtube);
                 final String trailerLink =
-                        "http://www.youtube.com/watch?v="+videos.getSource();
+                        "http://www.youtube.com/watch?v=" + videos.getSource();
                 button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         startActivity(new Intent(Intent.ACTION_VIEW,
-                            Uri.parse(trailerLink)));
+                                Uri.parse(trailerLink)));
                     }
                 });
                 TextView videoDesc = (TextView) item.findViewById(R.id.video_title);
@@ -131,9 +186,9 @@ public class InfoActivityFragment extends Fragment {
                 videoDesc.setText(title);
                 container.addView(item);
             }
-        }else Log.d("InfoActivityFragment", "Looks like there aint no trailers!");
+        } else Log.d("InfoActivityFragment", "Looks like there aint no trailers!");
 
-        if(results != null) {
+        if (results != null) {
             for (ReviewResult reviewResult : results) {
                 LayoutInflater inflator = LayoutInflater.from(getContext());
                 LinearLayout container = (LinearLayout) getActivity().findViewById(
@@ -147,23 +202,34 @@ public class InfoActivityFragment extends Fragment {
                 authorView.setText(author);
                 container.addView(item);
             }
-        }else Log.d("InfoActivityFragment", "Looks like there aint no reviews!");
+        } else Log.d("InfoActivityFragment", "Looks like there aint no reviews!");
     }
 
     public void onFavoriteClick() {
 
+        //Build byte array from image for database storage
+        ImageView posterView = (ImageView) getActivity().findViewById(R.id.detail_poster);
+        BitmapDrawable drawable = (BitmapDrawable) posterView.getDrawable();
+        Bitmap bitmap = drawable.getBitmap();
+        byte[] imageBytes = Utility.bitmapToBytes(bitmap);
         RealmMovie realmTest = Utility.movieDataDetailToRealm(masterMovie);
-        Log.d("InfoFrag", realmTest.getTitle());
+        realmTest.setImageBytes(imageBytes);
         Realm realm = Realm.getInstance(getContext());
         realm.beginTransaction();
-
         RealmMovie realmMovie = realm.copyToRealmOrUpdate(realmTest);
         realm.commitTransaction();
 
 
     }
 
-
+    /**
+     * @return boolean indicating whether or not the detail fragment has been populated
+     */
+    public boolean fragmentPopulated() {
+        if (masterMovie == null) {
+            return false;
+        } else return true;
+    }
 
 
     @Override
@@ -185,7 +251,7 @@ public class InfoActivityFragment extends Fragment {
             movieId = movie.getId();
         }
 
-        Button button = (Button)rootView.findViewById(R.id.favorite_button);
+        Button button = (Button) rootView.findViewById(R.id.favorite_button);
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -194,14 +260,45 @@ public class InfoActivityFragment extends Fragment {
         });
 
 
-
         return rootView;
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        inflater.inflate(R.menu.infofragment, menu);
+
+        // Retrieve the share menu item
+        MenuItem menuItem = menu.findItem(R.id.action_share);
+
+        // Get the provider and hold onto it to set/change the share intent.
+        ShareActionProvider shareActionProvider;
+
+        shareActionProvider = (ShareActionProvider)
+                MenuItemCompat.getActionProvider(menuItem);
+
+        // If onLoadFinished happens before this, we can go ahead and set the share intent now.
+
+        if (masterMovie != null) {
+        shareActionProvider.setShareIntent(createMovieIntent());
+        }
+    }
+
+    private Intent createMovieIntent() {
+        Intent shareIntent = new Intent(Intent.ACTION_SEND);
+        shareIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_WHEN_TASK_RESET);
+        shareIntent.setType("text/plain");
+        shareIntent.putExtra(Intent.EXTRA_TEXT, "http://www.youtube.com/watch?v="
+        +masterMovie.getTrailers().getYoutube().get(0).getSource());
+        return shareIntent;
     }
 
     @Override
     public void onStart() {
         super.onStart();
-        updateMovieInfo();
+        if (movieId != null) {
+            updateMovieInfo(movieId);
+        }
     }
 
 

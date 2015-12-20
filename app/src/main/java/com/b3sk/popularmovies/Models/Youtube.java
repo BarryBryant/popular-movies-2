@@ -9,12 +9,28 @@ import android.os.Parcelable;
 public class Youtube implements Parcelable {
 
 
-    public Youtube() {
-    }
+    public static final Parcelable.Creator<Youtube> CREATOR = new Parcelable.Creator<Youtube>() {
+        @Override
+        public Youtube createFromParcel(Parcel parcel) {
+            return new Youtube(parcel);
+        }
 
+        @Override
+        public Youtube[] newArray(int i) {
+            return new Youtube[i];
+        }
+    };
     private String name;
     private String source;
 
+
+    public Youtube() {
+    }
+
+    private Youtube(Parcel in) {
+        name = in.readString();
+        source = in.readString();
+    }
 
     /**
      * @return The name
@@ -30,7 +46,6 @@ public class Youtube implements Parcelable {
         this.name = name;
     }
 
-
     /**
      * @return The source
      */
@@ -43,23 +58,6 @@ public class Youtube implements Parcelable {
      */
     public void setSource(String source) {
         this.source = source;
-    }
-
-    public static final Parcelable.Creator<Youtube> CREATOR = new Parcelable.Creator<Youtube>() {
-        @Override
-        public Youtube createFromParcel(Parcel parcel) {
-            return new Youtube(parcel);
-        }
-
-        @Override
-        public Youtube[] newArray(int i) {
-            return new Youtube[i];
-        }
-    };
-
-    private Youtube(Parcel in) {
-        name = in.readString();
-        source = in.readString();
     }
 
     @Override

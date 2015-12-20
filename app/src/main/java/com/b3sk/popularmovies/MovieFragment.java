@@ -48,53 +48,80 @@ public class MovieFragment extends Fragment {
                 getString(R.string.pref_sort_key),
                 getString(R.string.pref_sort_popularity));
 
-        //perform api call if sort method is popularity or rating
+
         if (!getString(R.string.pref_sort_favorites).equals(sortMethod)) {
-            MovieApiInterface service = RestClient.getClient();
-            Call<MovieData> call = service.getQueryParam(sortMethod, BuildConfig.MOVIE_DB_API_KEY);
+            updateFromAPI(sortMethod);
 
-
-            call.enqueue(new Callback<MovieData>() {
-                @Override
-                public void onResponse(Response<MovieData> response) {
-                    MovieData result = response.body();
-                    movieList = result.getResults();
-                    movieAdapter.clear();
-                    for (int i = 0; i < movieList.size(); i++) {
-                        movieAdapter.add(movieList.get(i));
-                    }
-
-                }
-
-                @Override
-                public void onFailure(Throwable t) {
-                    Log.d("MainActivity", "well this aint right");
-                }
-            });
-            //perform offline database query if favorites is selected
         } else {
-            Realm realm = Realm.getInstance(getContext());
-            realm.beginTransaction();
-            RealmQuery<RealmMovie> query = realm.where(RealmMovie.class);
-            RealmResults<RealmMovie> result = query.findAll();
-
-            List<MovieInfo> favoriteList = new ArrayList<>();
-            for(RealmMovie movie: result){
-                Log.d("FavoriteLOOPER", movie.getId());
-                MovieInfo movieInfo = new MovieInfo();
-                movieInfo.setId(movie.getId());
-                movieInfo.setPosterPath(movie.getPosterPath());
-                favoriteList.add(movieInfo);
-            }
-            realm.commitTransaction();
-            movieList = favoriteList;
-            movieAdapter.clear();
-            for (int i = 0; i < movieList.size(); i++) {
-                movieAdapter.add(movieList.get(i));
-            }
-
+            updateFromFavorites();
         }
+
+
     }
+
+    private void updateFromAPI(String sortMethod) {
+
+        MovieApiInterface service = RestClient.getClient();
+        Call<MovieData> call = service.getQueryParam(sortMethod, BuildConfig.MOVIE_DB_API_KEY);
+
+
+        call.enqueue(new Callback<MovieData>() {
+            @Override
+            public void onResponse(Response<MovieData> response) {
+                MovieData result = response.body();
+                movieList = result.getResults();
+                //if two pane mode and detail fragment isn't populated add first movie
+                if (getActivity().findViewById(R.id.movie_detail_container) != null &&
+                        !InfoActivityFragment.checkIfFragmentPopulated()) {
+                    ((MovieCallback) getActivity())
+                            .onItemSelected(movieList.get(0));
+                }
+                movieAdapter.clear();
+                for (int i = 0; i < movieList.size(); i++) {
+                    movieAdapter.add(movieList.get(i));
+                }
+
+            }
+
+            @Override
+            public void onFailure(Throwable t) {
+                Log.d("MainActivity", "well this aint right");
+            }
+        });
+    }
+
+
+    private void updateFromFavorites() {
+        Realm realm = Realm.getInstance(getContext());
+        realm.beginTransaction();
+        RealmQuery<RealmMovie> query = realm.where(RealmMovie.class);
+        RealmResults<RealmMovie> result = query.findAll();
+
+        List<MovieInfo> favoriteList = new ArrayList<>();
+        for (RealmMovie movie : result) {
+            Log.d("FavoriteLOOPER", movie.getId());
+            MovieInfo movieInfo = new MovieInfo();
+            movieInfo.setId(movie.getId());
+            movieInfo.setPosterPath(movie.getPosterPath());
+            movieInfo.setImageBytes(movie.getImageBytes());
+            favoriteList.add(movieInfo);
+        }
+        realm.commitTransaction();
+        movieList = favoriteList;
+        //if two pane mode and detail fragment isn't populated add first movie
+        if (getActivity().findViewById(R.id.movie_detail_container) != null &&
+                !InfoActivityFragment.checkIfFragmentPopulated() &&
+                movieList.size() > 0) {
+            ((MovieCallback) getActivity())
+                    .onItemSelected(movieList.get(0));
+        }
+        movieAdapter.clear();
+        for (int i = 0; i < movieList.size(); i++) {
+            movieAdapter.add(movieList.get(i));
+        }
+
+    }
+
 
     //Check if there is a previously saved activity state.
     //Utilizes parcelable interface.

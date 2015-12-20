@@ -9,16 +9,35 @@ import android.os.Parcelable;
 public class MovieInfo implements Parcelable {
 
 
-    private String poster_path;
+    public static final Parcelable.Creator<MovieInfo> CREATOR = new Parcelable.Creator<MovieInfo>() {
+        @Override
+        public MovieInfo createFromParcel(Parcel parcel) {
+            return new MovieInfo(parcel);
+        }
 
+        @Override
+        public MovieInfo[] newArray(int i) {
+            return new MovieInfo[i];
+        }
+    };
+    private String poster_path;
     private String overview;
     private String release_date;
     private String id;
     private String title;
     private String vote_average;
-
+    private byte[] imageBytes;
 
     public MovieInfo() {
+    }
+
+    private MovieInfo(Parcel in) {
+        poster_path = in.readString();
+        overview = in.readString();
+        release_date = in.readString();
+        id = in.readString();
+        title = in.readString();
+        vote_average = in.readString();
     }
 
     /**
@@ -71,19 +90,19 @@ public class MovieInfo implements Parcelable {
         return vote_average;
     }
 
+    /**
+     * @return the byte array representing the poster image
+     */
+    public byte[] getImageBytes() {
+        return imageBytes;
+    }
 
-    public static final Parcelable.Creator<MovieInfo> CREATOR = new Parcelable.Creator<MovieInfo>() {
-        @Override
-        public MovieInfo createFromParcel(Parcel parcel) {
-            return new MovieInfo(parcel);
-        }
-
-        @Override
-        public MovieInfo[] newArray(int i) {
-            return new MovieInfo[i];
-        }
-    };
-
+    /**
+     * @param imageBytes
+     */
+    public void setImageBytes(byte[] imageBytes) {
+        this.imageBytes = imageBytes;
+    }
 
     @Override
     public int describeContents() {
@@ -98,15 +117,6 @@ public class MovieInfo implements Parcelable {
         parcel.writeString(id);
         parcel.writeString(title);
         parcel.writeString(vote_average);
-    }
-
-    private MovieInfo(Parcel in) {
-        poster_path = in.readString();
-        overview = in.readString();
-        release_date = in.readString();
-        id = in.readString();
-        title = in.readString();
-        vote_average = in.readString();
     }
 
 

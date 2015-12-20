@@ -12,10 +12,26 @@ import java.util.List;
 public class Trailers implements Parcelable {
 
 
-    public Trailers() {}
+    public static final Parcelable.Creator<Trailers> CREATOR = new Parcelable.Creator<Trailers>() {
+        @Override
+        public Trailers createFromParcel(Parcel parcel) {
+            return new Trailers(parcel);
+        }
 
+        @Override
+        public Trailers[] newArray(int i) {
+            return new Trailers[i];
+        }
+    };
     private List<Youtube> youtube = new ArrayList<Youtube>();
 
+
+    public Trailers() {
+    }
+
+    private Trailers(Parcel in) {
+        in.readList(youtube, this.getClass().getClassLoader());
+    }
 
     /**
      * @return The youtube
@@ -29,23 +45,6 @@ public class Trailers implements Parcelable {
      */
     public void setYoutube(List<Youtube> youtube) {
         this.youtube = youtube;
-    }
-
-    public static final Parcelable.Creator<Trailers> CREATOR = new Parcelable.Creator<Trailers>() {
-        @Override
-        public Trailers createFromParcel(Parcel parcel) {
-            return new Trailers(parcel);
-        }
-
-        @Override
-        public Trailers[] newArray(int i) {
-            return new Trailers[i];
-        }
-    };
-
-
-    private Trailers(Parcel in) {
-        in.readList(youtube, this.getClass().getClassLoader());
     }
 
     @Override

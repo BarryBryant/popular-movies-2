@@ -17,6 +17,7 @@ public class RealmMovie extends RealmObject {
     private String releaseDate;
     private String title;
     private String voteAverage;
+    private byte[] imageBytes;
     private RealmList<RealmTrailer> trailers;
     private RealmList<RealmReview> reviews;
 
@@ -106,6 +107,20 @@ public class RealmMovie extends RealmObject {
      */
     public void setVoteAverage(String vote_average) {
         this.voteAverage = vote_average;
+    }
+
+    /**
+     * @return the byte array representing the poster image
+     */
+    public byte[] getImageBytes() {
+        return imageBytes;
+    }
+
+    /**
+     * @param imageBytes
+     */
+    public void setImageBytes(byte[] imageBytes) {
+        this.imageBytes = imageBytes;
     }
 
     public RealmList<RealmTrailer> getTrailers() {

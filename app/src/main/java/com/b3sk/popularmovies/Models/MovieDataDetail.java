@@ -9,18 +9,42 @@ import android.os.Parcelable;
 public class MovieDataDetail implements Parcelable {
 
 
-    public MovieDataDetail() {
-    }
+    public static final Parcelable.Creator<MovieDataDetail> CREATOR = new Parcelable.Creator<MovieDataDetail>() {
+        @Override
+        public MovieDataDetail createFromParcel(Parcel parcel) {
+            return new MovieDataDetail(parcel);
+        }
 
+        @Override
+        public MovieDataDetail[] newArray(int i) {
+            return new MovieDataDetail[i];
+        }
+    };
     private String id;
     private String overview;
     private String poster_path;
     private String release_date;
     private String title;
     private String vote_average;
+    private byte[] imageBytes;
     private Trailers trailers;
     private Reviews reviews;
 
+
+    public MovieDataDetail() {
+    }
+
+
+    private MovieDataDetail(Parcel in) {
+        id = in.readString();
+        overview = in.readString();
+        poster_path = in.readString();
+        release_date = in.readString();
+        title = in.readString();
+        vote_average = in.readString();
+        trailers = in.readParcelable(Trailers.class.getClassLoader());
+        reviews = in.readParcelable(Reviews.class.getClassLoader());
+    }
 
     /**
      * @return The id
@@ -29,14 +53,12 @@ public class MovieDataDetail implements Parcelable {
         return id;
     }
 
-
     /**
      * @param id The id
      */
     public void setId(String id) {
         this.id = id;
     }
-
 
     /**
      * @return The overview
@@ -94,7 +116,6 @@ public class MovieDataDetail implements Parcelable {
         this.title = title;
     }
 
-
     /**
      * @return The vote_average
      */
@@ -107,6 +128,20 @@ public class MovieDataDetail implements Parcelable {
      */
     public void setVoteAverage(String vote_average) {
         this.vote_average = vote_average;
+    }
+
+    /**
+     * @return the byte array representing the poster image
+     */
+    public byte[] getImageBytes() {
+        return imageBytes;
+    }
+
+    /**
+     * @param imageBytes
+     */
+    public void setImageBytes(byte[] imageBytes) {
+        this.imageBytes = imageBytes;
     }
 
     /**
@@ -135,29 +170,6 @@ public class MovieDataDetail implements Parcelable {
      */
     public void setReviews(Reviews reviews) {
         this.reviews = reviews;
-    }
-
-    public static final Parcelable.Creator<MovieDataDetail> CREATOR = new Parcelable.Creator<MovieDataDetail>() {
-        @Override
-        public MovieDataDetail createFromParcel(Parcel parcel) {
-            return new MovieDataDetail(parcel);
-        }
-
-        @Override
-        public MovieDataDetail[] newArray(int i) {
-            return new MovieDataDetail[i];
-        }
-    };
-
-    private MovieDataDetail(Parcel in) {
-        id = in.readString();
-        overview = in.readString();
-        poster_path = in.readString();
-        release_date = in.readString();
-        title = in.readString();
-        vote_average = in.readString();
-        trailers = in.readParcelable(Trailers.class.getClassLoader());
-        reviews = in.readParcelable(Reviews.class.getClassLoader());
     }
 
     @Override

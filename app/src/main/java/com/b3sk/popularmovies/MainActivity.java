@@ -6,13 +6,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import com.b3sk.popularmovies.Models.MovieDataDetail;
 import com.b3sk.popularmovies.Models.MovieInfo;
 
 public class MainActivity extends AppCompatActivity implements MovieFragment.MovieCallback {
 
     private static final String MOVIE_FRAGMENT_TAG = "MFTAG";
-    public boolean twoPane;
+    private boolean twoPane;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

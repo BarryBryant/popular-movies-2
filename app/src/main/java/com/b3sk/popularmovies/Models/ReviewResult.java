@@ -9,12 +9,29 @@ import android.os.Parcelable;
 public class ReviewResult implements Parcelable {
 
 
-    public ReviewResult() {
-    }
+    public static final Parcelable.Creator<ReviewResult> CREATOR = new Parcelable.Creator<ReviewResult>() {
+        @Override
+        public ReviewResult createFromParcel(Parcel parcel) {
+            return new ReviewResult(parcel);
+        }
 
+        @Override
+        public ReviewResult[] newArray(int i) {
+            return new ReviewResult[i];
+        }
+    };
     private String author;
     private String content;
 
+
+    public ReviewResult() {
+    }
+
+
+    private ReviewResult(Parcel in) {
+        author = in.readString();
+        content = in.readString();
+    }
 
     /**
      * @return The author
@@ -22,7 +39,6 @@ public class ReviewResult implements Parcelable {
     public String getAuthor() {
         return author;
     }
-
 
     /**
      * @param author The author
@@ -43,24 +59,6 @@ public class ReviewResult implements Parcelable {
      */
     public void setContent(String content) {
         this.content = content;
-    }
-
-
-    public static final Parcelable.Creator<ReviewResult> CREATOR = new Parcelable.Creator<ReviewResult>() {
-        @Override
-        public ReviewResult createFromParcel(Parcel parcel) {
-            return new ReviewResult(parcel);
-        }
-
-        @Override
-        public ReviewResult[] newArray(int i) {
-            return new ReviewResult[i];
-        }
-    };
-
-    private ReviewResult(Parcel in) {
-        author = in.readString();
-        content = in.readString();
     }
 
     @Override

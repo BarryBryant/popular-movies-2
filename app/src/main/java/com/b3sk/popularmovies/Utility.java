@@ -1,6 +1,7 @@
 package com.b3sk.popularmovies;
 
-import android.util.Log;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 
 import com.b3sk.popularmovies.Models.MovieDataDetail;
 import com.b3sk.popularmovies.Models.RealmMovie;
@@ -11,6 +12,8 @@ import com.b3sk.popularmovies.Models.Reviews;
 import com.b3sk.popularmovies.Models.Trailers;
 import com.b3sk.popularmovies.Models.Youtube;
 
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.realm.RealmList;
@@ -76,9 +79,60 @@ public class Utility {
         return realmMovie;
     }
 
-    public MovieDataDetail realmToMovieDataDetail(RealmMovie realmMovie){
+    public static MovieDataDetail realmToMovieDataDetail(RealmMovie realmMovie) {
         MovieDataDetail movieDataDetail = new MovieDataDetail();
+        Trailers trailers = new Trailers();
+        Reviews reviews = new Reviews();
+        List<ReviewResult> reviewResults = new ArrayList<>();
+        List<Youtube> youtubes = new ArrayList<>();
 
-    return movieDataDetail;
+        movieDataDetail.setPosterPath(realmMovie.getPosterPath());
+        movieDataDetail.setId(realmMovie.getId());
+        movieDataDetail.setOverview(realmMovie.getOverview());
+        movieDataDetail.setTitle(realmMovie.getTitle());
+        movieDataDetail.setVoteAverage(realmMovie.getVoteAverage());
+        movieDataDetail.setReleaseDate(realmMovie.getReleaseDate());
+        movieDataDetail.setImageBytes(realmMovie.getImageBytes());
+
+        List<RealmReview> realmReviews = realmMovie.getReviews();
+        List<RealmTrailer> realmTrailers = realmMovie.getTrailers();
+
+        if (realmReviews.size() > 0) {
+            for (RealmReview realmReview : realmReviews) {
+                ReviewResult revRes = new ReviewResult();
+                revRes.setAuthor(realmReview.getAuthor());
+                revRes.setContent(realmReview.getContent());
+                reviewResults.add(revRes);
+            }
+
+            reviews.setResults(reviewResults);
+            movieDataDetail.setReviews(reviews);
+        }
+
+        if (realmTrailers.size() > 0) {
+            for (RealmTrailer realmTrailer : realmTrailers) {
+                Youtube youtube = new Youtube();
+                youtube.setName(realmTrailer.getName());
+                youtube.setSource(realmTrailer.getSource());
+                youtubes.add(youtube);
+
+            }
+
+            trailers.setYoutube(youtubes);
+            movieDataDetail.setTrailers(trailers);
+        }
+
+
+        return movieDataDetail;
+    }
+
+    public static byte[] bitmapToBytes(Bitmap bitmap) {
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
+        return stream.toByteArray();
+    }
+
+    public static Bitmap getImage(byte[] image) {
+        return BitmapFactory.decodeByteArray(image, 0, image.length);
     }
 }
