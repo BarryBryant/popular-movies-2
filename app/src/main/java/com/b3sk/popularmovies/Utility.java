@@ -51,29 +51,33 @@ public class Utility {
         realmMovie.setVoteAverage(vote);
 
         Trailers trailers = movie.getTrailers();
-        List<Youtube> youtube = trailers.getYoutube();
-        if (youtube != null) {
-            for (Youtube videos : youtube) {
-                String name = videos.getName();
-                String link = videos.getSource();
-                RealmTrailer trailer = new RealmTrailer();
-                trailer.setName(name);
-                trailer.setSource(link);
-                realmTrailers.add(trailer);
+        if(trailers != null) {
+            List<Youtube> youtube = trailers.getYoutube();
+            if (youtube != null) {
+                for (Youtube videos : youtube) {
+                    String name = videos.getName();
+                    String link = videos.getSource();
+                    RealmTrailer trailer = new RealmTrailer();
+                    trailer.setName(name);
+                    trailer.setSource(link);
+                    realmTrailers.add(trailer);
+                }
             }
         }
 
         Reviews reviews = movie.getReviews();
-        List<ReviewResult> result = reviews.getResults();
-        if (result != null) {
-            for (ReviewResult results : result) {
+        if(reviews != null) {
+            List<ReviewResult> result = reviews.getResults();
+            if (result != null) {
+                for (ReviewResult results : result) {
 
-                String author = results.getAuthor();
-                String content = results.getContent();
-                RealmReview review = new RealmReview();
-                review.setAuthor(author);
-                review.setContent(content);
-                realmReviews.add(review);
+                    String author = results.getAuthor();
+                    String content = results.getContent();
+                    RealmReview review = new RealmReview();
+                    review.setAuthor(author);
+                    review.setContent(content);
+                    realmReviews.add(review);
+                }
             }
         }
         realmMovie.setReviews(realmReviews);

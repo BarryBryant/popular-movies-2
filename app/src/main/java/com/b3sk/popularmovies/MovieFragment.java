@@ -158,7 +158,6 @@ public class MovieFragment extends Fragment {
 
         List<MovieInfo> favoriteList = new ArrayList<>();
         for (RealmMovie movie : result) {
-            Log.d("FavoriteLOOPER", movie.getId());
             MovieInfo movieInfo = new MovieInfo();
             movieInfo.setId(movie.getId());
             movieInfo.setPosterPath(movie.getPosterPath());
