@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:xliff="http://schemas.android.com/tools">
     <string name="app_name">PopularMovies</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
@@ -8,6 +8,8 @@
 
 
 
+    <string name="reviews">Reviews:</string>
+    <string name="trailers">Trailers:</string>
     <string name="pref_sort_label">Sort By</string>
     <string name="pref_sort_label_popularity">Popularity</string>
     <string name="pref_sort_label_rating">Rating</string>
@@ -19,4 +21,9 @@
 
     <string name="api_return_null">No Info Available</string>
     <string name="title_activity_movie_detail">MovieDetailActivity</string>
+    <string name="thumb_link">http://image.tmdb.org/t/p/w185/<xliff:g id="URL">%1$s</xliff:g></string>
+    <string name="release_date">(<xliff:g id="date">%1$s</xliff:g>)</string>
+    <string name="share_info">Check out this trailer!
+        "http://www.youtube.com/watch?v="<xliff:g id="youtube_link">%1$s</xliff:g></string>
+    <string name="rating">Rating: <xliff:g id="rating">%1$s</xliff:g>/10</string>
 </resources>

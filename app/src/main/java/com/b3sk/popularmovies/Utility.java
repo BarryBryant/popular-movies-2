@@ -22,7 +22,11 @@ import io.realm.RealmList;
  * Created by Joopk on 12/17/2015.
  */
 public class Utility {
-
+    /**
+     *
+     * @param movie MovieDataDetail to convert to a RealmMovie object
+     * @return RealmMovie object
+     */
     public static RealmMovie movieDataDetailToRealm(MovieDataDetail movie) {
         RealmMovie realmMovie = new RealmMovie();
         RealmList<RealmTrailer> realmTrailers = new RealmList<RealmTrailer>();
@@ -79,6 +83,12 @@ public class Utility {
         return realmMovie;
     }
 
+
+    /**
+     *
+     * @param realmMovie to convert to a movieDataDetail object
+     * @return MovieDataDetail object
+     */
     public static MovieDataDetail realmToMovieDataDetail(RealmMovie realmMovie) {
         MovieDataDetail movieDataDetail = new MovieDataDetail();
         Trailers trailers = new Trailers();
@@ -126,12 +136,22 @@ public class Utility {
         return movieDataDetail;
     }
 
+    /**
+     *
+     * @param bitmap to be converted to a byte array
+     * @return byte array for storage
+     */
     public static byte[] bitmapToBytes(Bitmap bitmap) {
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
         bitmap.compress(Bitmap.CompressFormat.PNG, 0, stream);
         return stream.toByteArray();
     }
 
+    /**
+     *
+     * @param image byte array to be converted to a Bitmap
+     * @return Bitmap for populating image view
+     */
     public static Bitmap getImage(byte[] image) {
         return BitmapFactory.decodeByteArray(image, 0, image.length);
     }

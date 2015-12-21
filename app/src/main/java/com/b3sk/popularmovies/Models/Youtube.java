@@ -6,30 +6,14 @@ import android.os.Parcelable;
 /**
  * Created by Joopk on 12/15/2015.
  */
-public class Youtube implements Parcelable {
+public class Youtube {
 
 
-    public static final Parcelable.Creator<Youtube> CREATOR = new Parcelable.Creator<Youtube>() {
-        @Override
-        public Youtube createFromParcel(Parcel parcel) {
-            return new Youtube(parcel);
-        }
-
-        @Override
-        public Youtube[] newArray(int i) {
-            return new Youtube[i];
-        }
-    };
     private String name;
     private String source;
 
 
     public Youtube() {
-    }
-
-    private Youtube(Parcel in) {
-        name = in.readString();
-        source = in.readString();
     }
 
     /**
@@ -59,17 +43,5 @@ public class Youtube implements Parcelable {
     public void setSource(String source) {
         this.source = source;
     }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(name);
-        parcel.writeString(source);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
 
 }

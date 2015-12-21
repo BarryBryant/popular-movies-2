@@ -18,11 +18,10 @@ public interface MovieApiInterface {
     Call<MovieData> getQueryParam(@Query("sort_by") String sortMethod,
                                   @Query("api_key") String apiKey);
 
-    @GET("/3/movie/{id}?")
+    @GET("/3/movie/{id}?&append_to_response=trailers,reviews")
     Call<MovieDataDetail> getIdAndKey(
             @Path("id") String id,
-            @Query("api_key") String apiKey,
-            @Query("append_to_response") String trailersAndReviews);
+            @Query("api_key") String apiKey);
 
 
 }

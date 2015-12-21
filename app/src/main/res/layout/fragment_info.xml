@@ -4,13 +4,25 @@
     android:layout_height="match_parent">
 
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/detail_title"
+
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
+            android:textSize="20sp" />
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
             android:orientation="horizontal">
 
             <ImageView
@@ -23,20 +35,11 @@
                 android:scaleType="fitCenter" />
 
             <LinearLayout
-                android:layout_width="wrap_content"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/detail_title"
 
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingLeft="16dp"
-
-                    android:paddingRight="16dp"
-                    android:paddingTop="16dp"
-                    android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/detail_date"
@@ -59,19 +62,21 @@
                     android:paddingRight="16dp"
                     android:textSize="16sp" />
 
-
                 <Button
                     android:id="@+id/favorite_button"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginLeft="16dp"
                     android:textSize="16sp"
                     android:text="FAVORITE"
+                    android:onClick="onFavoriteClick"
+
                     android:textColor="@color/white"
                     android:background="@color/purpleA200"
                     />
+
             </LinearLayout>
         </LinearLayout>
-
 
         <TextView
             android:id="@+id/detail_description"
@@ -83,6 +88,20 @@
             android:paddingRight="16dp"
             android:paddingTop="16dp"
             android:textSize="16sp" />
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="2dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/blue700"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/trailers"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
+            android:textSize="20sp" />
 
         <LinearLayout
             android:id="@+id/trailer_container"
@@ -93,6 +112,22 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="16dp" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_height="2dp"
+            android:background="@color/blue700"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/reviews"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingTop="16dp"
+            android:textSize="20sp" />
+
         <LinearLayout
             android:id="@+id/review_container"
             android:layout_width="match_parent"
@@ -102,11 +137,7 @@
             android:paddingLeft="16dp"
             android:paddingRight="16dp"
             android:paddingTop="16dp" />
-
-
-
-
-        </LinearLayout>
+    </LinearLayout>
 
 
 </ScrollView>

@@ -1,36 +1,18 @@
 package com.b3sk.popularmovies.Models;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Joopk on 12/15/2015.
  */
-public class Trailers implements Parcelable {
+public class Trailers {
 
 
-    public static final Parcelable.Creator<Trailers> CREATOR = new Parcelable.Creator<Trailers>() {
-        @Override
-        public Trailers createFromParcel(Parcel parcel) {
-            return new Trailers(parcel);
-        }
-
-        @Override
-        public Trailers[] newArray(int i) {
-            return new Trailers[i];
-        }
-    };
     private List<Youtube> youtube = new ArrayList<Youtube>();
 
 
     public Trailers() {
-    }
-
-    private Trailers(Parcel in) {
-        in.readList(youtube, this.getClass().getClassLoader());
     }
 
     /**
@@ -46,15 +28,4 @@ public class Trailers implements Parcelable {
     public void setYoutube(List<Youtube> youtube) {
         this.youtube = youtube;
     }
-
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeList(youtube);
-    }
-
-    @Override
-    public int describeContents() {
-        return 0;
-    }
-
 }

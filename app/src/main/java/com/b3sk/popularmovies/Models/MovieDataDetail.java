@@ -6,20 +6,8 @@ import android.os.Parcelable;
 /**
  * Created by Joopk on 12/15/2015.
  */
-public class MovieDataDetail implements Parcelable {
+public class MovieDataDetail {
 
-
-    public static final Parcelable.Creator<MovieDataDetail> CREATOR = new Parcelable.Creator<MovieDataDetail>() {
-        @Override
-        public MovieDataDetail createFromParcel(Parcel parcel) {
-            return new MovieDataDetail(parcel);
-        }
-
-        @Override
-        public MovieDataDetail[] newArray(int i) {
-            return new MovieDataDetail[i];
-        }
-    };
     private String id;
     private String overview;
     private String poster_path;
@@ -35,16 +23,6 @@ public class MovieDataDetail implements Parcelable {
     }
 
 
-    private MovieDataDetail(Parcel in) {
-        id = in.readString();
-        overview = in.readString();
-        poster_path = in.readString();
-        release_date = in.readString();
-        title = in.readString();
-        vote_average = in.readString();
-        trailers = in.readParcelable(Trailers.class.getClassLoader());
-        reviews = in.readParcelable(Reviews.class.getClassLoader());
-    }
 
     /**
      * @return The id
@@ -172,22 +150,7 @@ public class MovieDataDetail implements Parcelable {
         this.reviews = reviews;
     }
 
-    @Override
-    public void writeToParcel(Parcel parcel, int i) {
-        parcel.writeString(id);
-        parcel.writeString(overview);
-        parcel.writeString(poster_path);
-        parcel.writeString(release_date);
-        parcel.writeString(title);
-        parcel.writeString(vote_average);
-        parcel.writeParcelable(trailers, i);
-        parcel.writeParcelable(reviews, i);
-    }
 
-    @Override
-    public int describeContents() {
-        return 0;
-    }
 
 
 }

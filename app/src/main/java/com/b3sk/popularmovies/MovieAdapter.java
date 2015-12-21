@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.SharedPreferences;
 import android.graphics.Bitmap;
 import android.preference.PreferenceManager;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,11 +21,9 @@ import java.util.List;
 public class MovieAdapter extends ArrayAdapter<MovieInfo> {
 
 
-    private static final String LOG_TAG = MovieAdapter.class.getSimpleName();
-
     /**
      * @param context the current context
-     * @param movies  A list of movie posters to display in a grid
+     * @param movies  An ArrayList of MovieInfo objects with posters to display in a grid
      */
 
     public MovieAdapter(Activity context, List<MovieInfo> movies) {
@@ -45,7 +42,7 @@ public class MovieAdapter extends ArrayAdapter<MovieInfo> {
 
 
         ImageView posterView = (ImageView) convertView.findViewById(R.id.grid_item_image);
-        String thumbLink = "http://image.tmdb.org/t/p/w185/" + movieInfo.getPosterPath();
+        String thumbLink = getContext().getString(R.string.thumb_link, movieInfo.getPosterPath());
         SharedPreferences sharedPrefs =
                 PreferenceManager.getDefaultSharedPreferences(getContext());
         final String sortMethod = sharedPrefs.getString(
@@ -53,10 +50,10 @@ public class MovieAdapter extends ArrayAdapter<MovieInfo> {
                 getContext().getString(R.string.pref_sort_popularity));
 
         //If sort pref is set to favorites, load image from offline database
+        //If not, get image from link
         if (!getContext().getString(R.string.pref_sort_favorites).equals(sortMethod)) {
             Picasso.with(getContext()).load(thumbLink).into(posterView);
         } else {
-            Log.d("ADAPTER", "SUCCESSFUL LOAD FROM BMP");
             Bitmap image = Utility.getImage(movieInfo.getImageBytes());
             posterView.setImageBitmap(image);
         }

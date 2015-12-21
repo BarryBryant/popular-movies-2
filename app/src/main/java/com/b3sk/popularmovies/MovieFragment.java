@@ -40,6 +40,68 @@ public class MovieFragment extends Fragment {
     public MovieFragment() {
     }
 
+
+    //Check if there is a previously saved activity state.
+    //Utilizes parcelable interface.
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        if (savedInstanceState == null || !savedInstanceState.containsKey(PAR_KEY)) {
+            movieList = new ArrayList<>();
+        } else {
+            movieList = savedInstanceState.getParcelableArrayList(PAR_KEY);
+        }
+    }
+
+    //Saves state of activity as parcelable.
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putParcelableArrayList(PAR_KEY, (ArrayList) movieList);
+        super.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+
+        //Instantiates a new custom array adapter to handle the movie objects.
+        movieAdapter = new MovieAdapter(getActivity(), movieList);
+
+        //Use the custom adapter to populate a grid view.
+        GridView gridView = (GridView) rootView.findViewById(R.id.gridview_movie);
+        gridView.setAdapter(movieAdapter);
+
+
+        //Set on click listener to launch movie info activity after clicking a
+        //movie poster thumbnail on the gridview.
+        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                MovieInfo movie = movieAdapter.getItem(i);
+                if (movie != null) {
+                    ((MovieCallback) getActivity())
+                            .onItemSelected(movie);
+                }
+            }
+        });
+
+
+        return rootView;
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        updateMovie();
+    }
+
+
+    public interface MovieCallback {
+        void onItemSelected(MovieInfo movie);
+    }
+
+
     private void updateMovie() {
 
         SharedPreferences sharedPrefs =
@@ -47,16 +109,13 @@ public class MovieFragment extends Fragment {
         final String sortMethod = sharedPrefs.getString(
                 getString(R.string.pref_sort_key),
                 getString(R.string.pref_sort_popularity));
-
-
+        //Populate the gridview based on sorting preference
         if (!getString(R.string.pref_sort_favorites).equals(sortMethod)) {
             updateFromAPI(sortMethod);
 
         } else {
             updateFromFavorites();
         }
-
-
     }
 
     private void updateFromAPI(String sortMethod) {
@@ -120,67 +179,6 @@ public class MovieFragment extends Fragment {
             movieAdapter.add(movieList.get(i));
         }
 
-    }
-
-
-    //Check if there is a previously saved activity state.
-    //Utilizes parcelable interface.
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (savedInstanceState == null || !savedInstanceState.containsKey(PAR_KEY)) {
-            movieList = new ArrayList<>();
-        } else {
-            movieList = savedInstanceState.getParcelableArrayList(PAR_KEY);
-        }
-    }
-
-    //Saves state of activity as parcelable.
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(PAR_KEY, (ArrayList) movieList);
-        super.onSaveInstanceState(outState);
-    }
-
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
-        //Instantiates a new custom array adapter to handle the movie objects.
-        movieAdapter = new MovieAdapter(getActivity(), movieList);
-
-        //Use the custom adapter to populate a grid view.
-        GridView gridView = (GridView) rootView.findViewById(R.id.gridview_movie);
-        gridView.setAdapter(movieAdapter);
-
-
-        //Set on click listener to launch movie info activity after clicking a
-        //movie poster thumbnail on the gridview.
-        gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                MovieInfo movie = movieAdapter.getItem(i);
-                if (movie != null) {
-                    ((MovieCallback) getActivity())
-                            .onItemSelected(movie);
-                }
-            }
-        });
-
-
-        return rootView;
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        updateMovie();
-    }
-
-
-    public interface MovieCallback {
-        void onItemSelected(MovieInfo movie);
     }
 
 
