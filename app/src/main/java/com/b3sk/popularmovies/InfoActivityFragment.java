@@ -254,6 +254,7 @@ public class InfoActivityFragment extends Fragment {
                     Button button = (Button) item.findViewById(R.id.launch_youtube);
                     final String trailerLink =
                             "http://www.youtube.com/watch?v=" + videos.getSource();
+                    Log.d("VIDEO MASTER", videos.getSource());
                     button.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
