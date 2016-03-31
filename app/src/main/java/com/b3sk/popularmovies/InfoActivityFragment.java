@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.MenuItemCompat;
+import android.support.v7.widget.CardView;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -251,7 +252,7 @@ public class InfoActivityFragment extends Fragment {
                     LinearLayout container = (LinearLayout) getActivity().findViewById(
                             R.id.trailer_container);
                     View item = inflator.inflate(R.layout.trailer, null);
-                    Button button = (Button) item.findViewById(R.id.launch_youtube);
+                    LinearLayout button = (LinearLayout) item.findViewById(R.id.launch_youtube);
                     final String trailerLink =
                             "http://www.youtube.com/watch?v=" + videos.getSource();
                     Log.d("VIDEO MASTER", videos.getSource());
