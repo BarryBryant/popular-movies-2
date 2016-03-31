@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.b3sk.popularmovies.Models.MovieDataDetail;
 import com.b3sk.popularmovies.Models.MovieInfo;
@@ -294,6 +295,8 @@ public class InfoActivityFragment extends Fragment {
     }
 
     public void onFavoriteClick() {
+
+        Toast.makeText(getContext(), "Added to favorites!", Toast.LENGTH_SHORT).show();
 
         //Build byte array from image for database storage
         ImageView posterView = (ImageView) getActivity().findViewById(R.id.detail_poster);
