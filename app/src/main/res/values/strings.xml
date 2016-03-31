@@ -26,4 +26,5 @@
     <string name="share_info">Check out this trailer!
         "http://www.youtube.com/watch?v="<xliff:g id="youtube_link">%1$s</xliff:g></string>
     <string name="rating">Rating: <xliff:g id="rating">%1$s</xliff:g>/10</string>
+    <string name="favorite_button">FAVORITE</string>
 </resources>
