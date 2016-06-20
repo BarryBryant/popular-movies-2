@@ -4,7 +4,7 @@ Built an app to help users discover popular and highly rated movies on the web. 
 
 ___
 
-![](http://i.imgur.com/q1fH6Il.gif) 
+![Imgur](http://i.imgur.com/qKXF4n9.gif)
 
 ___
 
